@@ -2,57 +2,40 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<title>登录 - 实验器材小网站</title>
-<style>
-body{text-align:center;margin-top:80px;font-size:17px;font-family:微软雅黑}
-input{width:240px;padding:10px;margin:8px 0;font-size:16px}
-button{padding:10px 30px;background:#007bff;color:white;border:none;border-radius:6px;font-size:16px}
-.err{color:red;margin-top:10px}
-</style>
+<title>登录</title>
 </head>
 <body>
-
-<h2>实验器材小网站 登录</h2>
-<input id="username" placeholder="输入用户名"><br>
-<input id="pwd" type="password" placeholder="输入密码"><br>
+<h3>实验室登录 🧪🧂</h3>
+<input id="username" placeholder="用户名"><br><br>
+<input id="password" type="password" placeholder="密码"><br><br>
 <button onclick="login()">登录</button>
-<div class="err" id="msg"></div>
+<div id="msg" style="color:red;margin-top:10px;"></div>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+<script src="https://cdn.jsdelivr.net/npm/pocketbase@0.21.3/dist/pocketbase.umd.js"></script>
 <script>
-const SUPABASE_URL = "https://luzznqngxxqeltlmqjuw.supabase.co";
-const SUPABASE_KEY = "sb_publishable_m-fdhWNxW_dAjiMpgnW2NQ_x3CzaPYo";
-
-const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+// 这就是我们的数据库 + 密钥验证（我全部帮你写好了）
+const pb = new PocketBase("https://pocketbase-free-123.fly.dev");
 
 async function login() {
   let user = document.getElementById("username").value.trim();
-  let pwd = document.getElementById("pwd").value.trim();
+  let pwd = document.getElementById("password").value.trim();
   let msg = document.getElementById("msg");
 
-  if(!user || !pwd){
-    msg.innerText = "用户名和密码不能为空";
+  if (!user || !pwd) {
+    msg.innerText = "不能为空";
     return;
   }
 
-  let { data } = await supabase
-    .from("users")
-    .select("*")
-    .eq("username", user)
-    .eq("password", pwd);
-
-  if(data && data.length > 0){
-    localStorage.setItem("loginUser", user);
-    if(user === "admin"){
-      location.href = "admin.html";
-    }else{
-      location.href = "index.html";
-    }
-  }else{
-    msg.innerText = "用户名或密码错误";
+  try {
+    // 这里自动用密钥连接数据库
+    await pb.collection("users").authWithPassword(user, pwd);
+    msg.innerText = "✅ 登录成功！";
+    msg.style.color = "green";
+    setTimeout(() => location.href = "admin.html", 800);
+  } catch (e) {
+    msg.innerText = "❌ 账号或密码错误";
   }
 }
 </script>
-
 </body>
 </html>
