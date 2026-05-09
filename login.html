@@ -18,10 +18,11 @@ button{padding:10px 30px;background:#007bff;color:white;border:none;border-radiu
 <button onclick="login()">登录</button>
 <div class="err" id="msg"></div>
 
-<script src="https://cdn.jsdelivr.net/npm/supabase-js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 <script>
 const SUPABASE_URL = "https://luzznqngxxqeltlmqjuw.supabase.co";
-const SUPABASE_KEY = "暂未填写密钥";
+const SUPABASE_KEY = "sb_publishable_m-fdhWNxW_dAjiMpgnW2NQ_x3CzaPYo";
+
 const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 async function login() {
@@ -40,9 +41,8 @@ async function login() {
     .eq("username", user)
     .eq("password", pwd);
 
-  if(data.length > 0){
+  if(data && data.length > 0){
     localStorage.setItem("loginUser", user);
-    // 关键判断：只有admin能进管理后台
     if(user === "admin"){
       location.href = "admin.html";
     }else{
