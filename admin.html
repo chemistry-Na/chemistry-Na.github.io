@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>管理后台</title>
+</head>
+<body>
+<h2>✅ 后台管理 🧪🧂</h2>
+<p>用户名：<span id="user"></span></p>
+<p>当前积分：<span id="score" style="color:blue;font-size:20px;"></span></p>
+<br>
+<a href="login.html">退出登录</a>
+
+<script src="https://cdn.jsdelivr.net/npm/pocketbase@0.21.3/dist/pocketbase.umd.js"></script>
+<script>
+const pb = new PocketBase("https://pocketbase-free-123.fly.dev");
+
+// 如果没登录，自动回登录页
+if (!pb.authStore.model) {
+  location.href = "login.html";
+}
+
+let userData = pb.authStore.model;
+document.getElementById("user").innerText = userData.username;
+document.getElementById("score").innerText = userData.score || 0;
+</script>
+</body>
+</html>
